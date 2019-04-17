@@ -1,6 +1,5 @@
 #ifndef SCRIPT_H
 #define SCRIPT_H
-#include <iostream>
 #pragma once
 struct List{
 	int Data;
