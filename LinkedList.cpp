@@ -1,8 +1,6 @@
 //File Reading using Single-Linked-Lists
 // KaliMoro
-#include <iostream>
-#include <fstream>
-#include <map>
+#include "LinkedList.h"
 template<typename T> class LinkedList{
 private:
 	struct Node{
