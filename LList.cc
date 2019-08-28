@@ -4,7 +4,7 @@ template<typename T> class LinkedList{
 	struct Node{
 		Node() = default;
 		Node(Node* n) : data{n->data}, next{n->next} {}
-		decltype(auto) operator=(Node* n){
+		Node& operator=(Node* n){
 			this->data = n->data;
 			this->next = n->next;
 			return *this;
