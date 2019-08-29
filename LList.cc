@@ -1,10 +1,9 @@
 #include <bits/stdc++.h>
 template<typename T> class LinkedList{
-    
 	struct Node{
 		Node() = default;
 		Node(Node* n) : data{n->data}, next{n->next} {}
-		Node& operator=(Node* n){
+		decltype(auto) operator=(Node* n){
 			this->data = n->data;
 			this->next = n->next;
 			return *this;
@@ -33,11 +32,20 @@ public:
 		lhs = rhs;
 		rhs = tmp;
 	}
+	LinkedList<T> Reverse(){
+		std::vector<T> Vector;
+		for(Node* n = LList.Head; n; n = n->next) Vector.push_back(n->data);
+		std::reverse(Vector.begin(), Vector.end());
+		LinkedList<T> list(*Vector.begin(), *(Vector.end()-1));
+		for(auto p = ++Vector.begin(), e = (Vector.end()-1); p != e; ++p) list += *p;
+		return list;
+	}
 	LinkedList<T> Sort(){
 		std::map<T, Node*> Map;
 		for(Node* n = LList.Head; n; n = n->next) Map[n->data] = n;
-		LinkedList<T> list{Map.begin()->first, (--Map.end())->first};
-		for(auto p = ++Map.begin(), e = (--Map.end()); p != e; ++p) list += p->first;
+        auto h = Map.begin(), t = (Map.end());
+		LinkedList<T> list(h->first, (--t)->first);
+		for(auto p = ++Map.begin(); p != t; ++p) list += p->first;
 		return list;
 	}
 	const std::size_t GetNodes(){
