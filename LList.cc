@@ -3,7 +3,7 @@ template<typename T> class LinkedList{
 	struct Node{
 		Node() = default;
 		Node(Node* n) : data{n->data}, next{n->next} {}
-		decltype(auto) operator=(Node* n){
+		Node& operator=(Node* n){
 			this->data = n->data;
 			this->next = n->next;
 			return *this;
@@ -27,10 +27,16 @@ public:
 	~LinkedList(){
 		for(Node* n = LList.Head, *next = n->next; next; n = next, next = next->next) delete n;
 	}
+	Node* begin(){
+		return LList.Head;	
+	}
+	Node* end(){
+		return LList.Tail;
+	}
 	void Swap(Node* lhs, Node* rhs){
-		Node* tmp = lhs;
-		lhs = rhs;
-		rhs = tmp;
+		T tmp = lhs->data;
+		lhs->data = rhs->data;
+        rhs->data = tmp;
 	}
 	LinkedList<T> Reverse(){
 		std::vector<T> Vector;
@@ -102,3 +108,4 @@ public:
         return o << LL.LList.Tail->data << '\n';
     }
 };
+
