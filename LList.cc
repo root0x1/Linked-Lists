@@ -27,12 +27,6 @@ public:
 	~LinkedList(){
 		for(Node* n = LList.Head, *next = n->next; next; n = next, next = n->next) delete n;
 	}
-	Node* begin(){
-		return LList.Head;	
-	}
-	Node* end(){
-		return LList.Tail;
-	}
 	void Swap(Node* lhs, Node* rhs){
 		T tmp = lhs->data;
 		lhs->data = rhs->data;
@@ -113,3 +107,4 @@ public:
         return o;
     }
 };
+
