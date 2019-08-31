@@ -25,7 +25,7 @@ public:
 		LList.Tail->next = nullptr;
 	}
 	~LinkedList(){
-		for(Node* n = LList.Head, *next = n->next; next; n = next, next = next->next) delete n;
+		for(Node* n = LList.Head, *next = n->next; next; n = next, next = n->next) delete n;
 	}
 	Node* begin(){
 		return LList.Head;	
@@ -41,18 +41,23 @@ public:
 	LinkedList<T> Reverse(){
 		std::vector<T> Vector;
 		for(Node* n = LList.Head; n; n = n->next) Vector.push_back(n->data);
-		std::reverse(Vector.begin(), Vector.end());
-		LinkedList<T> list(*Vector.begin(), *(Vector.end()-1));
-		for(auto p = ++Vector.begin(), e = (Vector.end()-1); p != e; ++p) list += *p;
-		return list;
+		auto itr = std::begin(Vector), _itr = std::end(Vector);
+		std::reverse(itr, _itr);
+		LinkedList<T> list{*(itr++), *(--_itr)};
+		for(; itr != _itr; ++itr) list += *itr;
+		return list;    
 	}
 	LinkedList<T> Sort(){
-		std::map<T, Node*> Map;
-		for(Node* n = LList.Head; n; n = n->next) Map[n->data] = n;
-        auto h = Map.begin(), t = (Map.end());
-		LinkedList<T> list(h->first, (--t)->first);
-		for(auto p = ++Map.begin(); p != t; ++p) list += p->first;
-		return list;
+		if(!std::is_pointer<T>::value)
+		{	
+			std::vector<T> Vector;
+			for(Node* n = LList.Head; n; n = n->next) Vector.push_back(n->data);
+			auto itr = std::begin(Vector), _itr = std::end(Vector);
+			std::sort(itr, _itr);
+			LinkedList<T> list{*(itr++), *(--_itr)};
+			for(; itr != _itr; ++itr) list += *itr;
+			return list;
+		}else std::cerr << "Cannot Sort Pointers, T = " << typeid(T).name() << '\n';
 	}
 	const std::size_t GetNodes(){
 		return Nodes;
@@ -104,8 +109,7 @@ public:
 		LL.Nodes -= 1;
 	}
     friend std::ostream& operator<<(std::ostream& o, LinkedList<T>& LL){
-        for(Node* n = LL.LList.Head; n != LL.LList.Tail; n = n->next) o << n->data << '\n';
-        return o << LL.LList.Tail->data << '\n';
+        for(Node* n = LL.LList.Head; n; n = n->next) o << n->data << '\n';
+        return o;
     }
 };
-
