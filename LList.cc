@@ -3,11 +3,6 @@ template<typename T> class LinkedList{
 	struct Node{
 		Node() = default;
 		Node(Node* n) : data{n->data}, next{n->next} {}
-		Node& operator=(Node* n){
-			this->data = n->data;
-			this->next = n->next;
-			return *this;
-		}
         T data;
 		Node* next;
 	};
@@ -17,7 +12,7 @@ template<typename T> class LinkedList{
 	}LList;
 	std::size_t Nodes;
 public:
-	LinkedList() = default;
+	LinkedList() = delete;
 	LinkedList(T head, T tail) : Nodes{2}{
 		LList.Head->data = head;
 		LList.Head->next = LList.Tail;
@@ -25,7 +20,7 @@ public:
 		LList.Tail->next = nullptr;
 	}
 	~LinkedList(){
-		for(Node* n = LList.Head, *next = n->next; next; n = next, next = n->next) delete n;
+		for(Node* n = LList.Head, *next = n->next; next; n = next, next = next->next){delete n;}
 	}
 	void Swap(Node* lhs, Node* rhs){
 		T tmp = lhs->data;
@@ -42,16 +37,14 @@ public:
 		return list;    
 	}
 	LinkedList<T> Sort(){
-		if(!std::is_pointer<T>::value)
-		{	
-			std::vector<T> Vector;
-			for(Node* n = LList.Head; n; n = n->next) Vector.push_back(n->data);
-			auto itr = std::begin(Vector), _itr = std::end(Vector);
-			std::sort(itr, _itr);
-			LinkedList<T> list{*(itr++), *(--_itr)};
-			for(; itr != _itr; ++itr) list += *itr;
-			return list;
-		}else std::cerr << "Cannot Sort Pointers, T = " << typeid(T).name() << '\n';
+		if(std::is_pointer<T>::value){std::cout << "Cannot Sort Pointers, T = " << typeid(T).name() << '\n'; throw typeid(T).name();}
+		std::vector<T> Vector;
+		for(Node* n = LList.Head; n; n = n->next) Vector.push_back(n->data);
+		auto itr = std::begin(Vector), _itr = std::end(Vector);
+		std::sort(itr, _itr);
+		LinkedList<T> list{*(itr++), *(--_itr)};
+		for(; itr != _itr; ++itr) list += *itr;
+		return list;		
 	}
 	const std::size_t GetNodes(){
 		return Nodes;
@@ -59,7 +52,7 @@ public:
 	Node* Search(T data){
 		for(Node* n = LList.Head; n; n = n->next) if(n->data == data) return n;
 		return nullptr;
-	}	
+	}
 	friend void operator+=(LinkedList<T>& LL, T data){
 		if(LL.LList.Head->next == LL.LList.Tail){
 			Node* n = new Node;
@@ -103,8 +96,8 @@ public:
 		LL.Nodes -= 1;
 	}
     friend std::ostream& operator<<(std::ostream& o, LinkedList<T>& LL){
+    	if(std::is_same<T, LinkedList>::value){std::cerr << "Error: Nested Linked Lists\n"; return o;}
         for(Node* n = LL.LList.Head; n; n = n->next) o << n->data << '\n';
         return o;
     }
 };
-
